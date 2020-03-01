@@ -28,7 +28,7 @@ download_without_overwrite <- function(url, folder, nombreArchivo, anio)
 
   file_exists <- grepl(base, list.files(folder), fixed = TRUE)
 
-  filename <- paste0(nombreArchivo, "_" , anio, ".", "csv")
+  filename <- paste0(nombreArchivo, "_" , anio, ".", ext)
 
   download.file(url, file.path(folder, filename), mode = "wb", method = "libcurl")
 }
@@ -79,30 +79,50 @@ for (vinculo in links_hechos_transito) {
   Sys.sleep(1)
 }
 
+# Se leen los archivos del directorio xlsx
 listaArchivos<-list.files(getwd())
 head(listaArchivos,30)
-dsVehiculosInvolucrados <-data.frame()
-dsHechoTranstio <-data.frame()
 
-
-for (archivo in listaArchivos)
-{
+# Por cada archivo..
+for (archivo in listaArchivos){
   print(archivo)
   base <- tools::file_path_sans_ext(archivo)
   
-  if(!exists("test"))
-    test <- data.frame()
-  
+  # Si es de tipo vehiculos involucrados
 	if(substr(base, 1, nchar(base)-5) == "vehiculos_involucrados"){
-		temp_dataset <- read.xlsx(archivo)
-		test <- Reduce(function(...)merge (..., all=T), list(test, temp_dataset))
-		print(names(test))
-		test<-dplyr::bind_rows(test, temp_dataset)
-		rm(temp_dataset)
+	  
+	  # Se crea el df si no existe
+	  if(!exists("dfVehiculosInvolucrados"))
+	  {
+	    dfVehiculosInvolucrados <- data.frame() 
+	    dfVehiculosInvolucrados <- read.xlsx(archivo)
+	  }
+	  
+	  # Se adjuntan el resto de df's
+	  else
+	  {
+	    temp_dataset <- read.xlsx(archivo)
+	    dfVehiculosInvolucrados <- Reduce(function(...)merge (..., all=T), list(dfVehiculosInvolucrados, temp_dataset))
+	    rm(temp_dataset)
+	  }
 	}
-}
 
-rm(dsVehiculosInvolucrados, dsHechoTranstio, temp_dataset, test)
+  
+  # Repetir con otros archivos 
+  else if (substr(base, 1, nchar(base)-5) == "hechos_transito"){
+    if(!exists("dfHechoTransito"))
+    {
+      dfHechoTransito <- data.frame() 
+      dfHechoTransito <- read.xlsx(archivo)
+    }
+    else
+    {
+      temp_dataset <- read.xlsx(archivo)
+      dfHechoTransito <- Reduce(function(...)merge (..., all=T), list(dfHechoTransito, temp_dataset))
+      rm(temp_dataset)
+    }
+  }
+}
 
 # Salir del directorio de los .xlsx
 setwd("../")
