@@ -1,0 +1,108 @@
+# Oscar Juarez
+# Febrero 2019
+# Script que sirve para descargar y unir archivos de datos de vehículos de la INE
+
+#Paquetes necesarios
+#install.packages("lubridate")
+#install.packages("stringr")
+#install.packages("openxlsx")
+#install.packages("dplyr")
+
+library("tools")
+library("lubridate")
+library("stringr")
+library("openxlsx")
+library("dplyr")
+
+rm# Directorio principal
+setwd("../Data/xlsx")
+
+# Para obtener los links usé la siguiente shiny apps disponible en:https://spannbaueradam.shinyapps.io/r_regex_tester/ con el 
+# código fuente de la página de la SAT y el siguiente patrón: https://portal.sat.gob.gt/portal/descarga/5030/importacion-de-vehiculos/[[:digit:]]{4}/importacion_de_vehiculos_[[:digit:]]{4}_[[:lower:]]+.zip
+
+download_without_overwrite <- function(url, folder, nombreArchivo, anio)
+{
+  filename <- basename(url)
+  base <- tools::file_path_sans_ext(filename)
+  ext <- tools::file_ext(filename)
+
+  file_exists <- grepl(base, list.files(folder), fixed = TRUE)
+
+  filename <- paste0(nombreArchivo, "_" , anio, ".", "csv")
+
+  download.file(url, file.path(folder, filename), mode = "wb", method = "libcurl")
+}
+
+links_vehiculos_involucrados<-"
+https://www.ine.gob.gt/sistema/uploads/2017/05/30/MVtI7adfQzZWF5uefXZ4xmZVG0vRik3S.xlsx
+
+https://www.ine.gob.gt/sistema/uploads/2018/06/01/2018060193914Nyto5KpgXeUsKGoT4SpRknBumA8etDe4.xlsx
+
+https://www.ine.gob.gt/sistema/uploads/2019/06/10/20190610171521QZwxwRe5OLADYzMpAncpW3yR4defMHqN.xlsx
+"
+
+links_hechos_transito<-"
+https://www.ine.gob.gt/sistema/uploads/2017/05/30/DX2BmYU5m4JfPRhrFHwDRDEs49V7fN5I.xlsx
+
+https://www.ine.gob.gt/sistema/uploads/2018/06/01/2018060194026zskZfNalr2em0qLC5Wn6bxC1mBim617t.xlsx
+
+https://www.ine.gob.gt/sistema/uploads/2019/06/06/20190606220636xaPevkVgXaNin0L0ZmXiN4fm18JAFoLG.xlsx
+"
+
+links_vehiculos_involucrados<-str_trim(unlist(strsplit(links_vehiculos_involucrados,"[[:cntrl:]]")))
+links_vehiculos_involucrados<-links_vehiculos_involucrados[links_vehiculos_involucrados!=""]
+
+links_hechos_transito<-str_trim(unlist(strsplit(links_hechos_transito,"[[:cntrl:]]")))
+links_hechos_transito<-links_hechos_transito[links_hechos_transito!=""]
+
+anio <- 2016
+for (vinculo in links_vehiculos_involucrados) {
+	download_without_overwrite(
+		vinculo,
+		getwd(),
+		"vehiculos_involucrados",
+		anio
+	)
+	anio <- anio + 1
+  Sys.sleep(1)
+}
+
+anio <- 2016
+for (vinculo in links_hechos_transito) {
+	download_without_overwrite(
+		vinculo,
+		getwd(),
+		"hechos_transito",
+		anio
+	)
+	anio <- anio + 1
+  Sys.sleep(1)
+}
+
+listaArchivos<-list.files(getwd())
+head(listaArchivos,30)
+dsVehiculosInvolucrados <-data.frame()
+dsHechoTranstio <-data.frame()
+
+
+for (archivo in listaArchivos)
+{
+  print(archivo)
+  base <- tools::file_path_sans_ext(archivo)
+  
+  if(!exists("test"))
+    test <- data.frame()
+  
+	if(substr(base, 1, nchar(base)-5) == "vehiculos_involucrados"){
+		temp_dataset <- read.xlsx(archivo)
+		test <- Reduce(function(...)merge (..., all=T), list(test, temp_dataset))
+		print(names(test))
+		test<-dplyr::bind_rows(test, temp_dataset)
+		rm(temp_dataset)
+	}
+}
+
+rm(dsVehiculosInvolucrados, dsHechoTranstio, temp_dataset, test)
+
+# Salir del directorio de los .xlsx
+setwd("../")

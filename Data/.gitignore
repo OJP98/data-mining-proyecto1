@@ -1,4 +1,5 @@
 /txts/
 /zips/
+/xlsx/*
 *.csv
 *.RData
