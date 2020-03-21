@@ -15,7 +15,7 @@ library("openxlsx")
 library("dplyr")
 
 rm# Directorio principal
-setwd("../Data/xlsx")
+setwd("./Data")
 
 # Para obtener los links usé la siguiente shiny apps disponible en:https://spannbaueradam.shinyapps.io/r_regex_tester/ con el 
 # código fuente de la página de la SAT y el siguiente patrón: https://portal.sat.gob.gt/portal/descarga/5030/importacion-de-vehiculos/[[:digit:]]{4}/importacion_de_vehiculos_[[:digit:]]{4}_[[:lower:]]+.zip
@@ -167,5 +167,7 @@ for (archivo in listaArchivos){
 
 dfHechoTransitoLimpio <- select(dfHechoTransito,núm_corre, día_ocu,año_ocu,mes_ocu,día_sem_ocu,mupio_ocu,depto_ocu,tipo_veh,tipo_eve,g_hora,g_hora_5,)
 dfVehiculosInvolucradosLimpio <- select(dfVehiculosInvolucrados,núm_corre, día_ocu,año_ocu,mes_ocu,día_sem_ocu,mupio_ocu,depto_ocu,sexo_per,edad_per,mayor_menor,tipo_veh,tipo_veh,g_edad_80ymás,g_edad_60ymás,edad_quinquenales,g_hora,g_hora_5)
+write.csv(dfHechoTransitoLimpio, file="HechoTransito.csv",row.names = F)
+write.csv(dfVehiculosInvolucradosLimpio, file="VehiculosInvolucrados.csv",row.names = F)
 # Salir del directorio de los .xlsx
 setwd("../../AnalisisR/")
