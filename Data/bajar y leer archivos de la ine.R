@@ -49,12 +49,25 @@ https://www.ine.gob.gt/sistema/uploads/2018/06/01/2018060194026zskZfNalr2em0qLC5
 https://www.ine.gob.gt/sistema/uploads/2019/06/06/20190606220636xaPevkVgXaNin0L0ZmXiN4fm18JAFoLG.xlsx
 "
 
+links_fallecidos_lesionados<-"
+https://www.ine.gob.gt/sistema/uploads/2017/05/30/MVtI7adfQzZWF5uefXZ4xmZVG0vRik3S.xlsx
+
+https://www.ine.gob.gt/sistema/uploads/2018/06/19/201806191110218FciGNFOtT2FJnkTOS0pTzPcDOW8FpLB.xlsx
+
+https://www.ine.gob.gt/sistema/uploads/2019/06/06/20190606220307YRSvO7OHib0rQxKDCTAl2fkXMl05g9Uz.xlsx
+"
+
+
 links_vehiculos_involucrados<-str_trim(unlist(strsplit(links_vehiculos_involucrados,"[[:cntrl:]]")))
 links_vehiculos_involucrados<-links_vehiculos_involucrados[links_vehiculos_involucrados!=""]
 
 links_hechos_transito<-str_trim(unlist(strsplit(links_hechos_transito,"[[:cntrl:]]")))
 links_hechos_transito<-links_hechos_transito[links_hechos_transito!=""]
 
+links_fallecidos_lesionados<-str_trim(unlist(strsplit(links_fallecidos_lesionados,"[[:cntrl:]]")))
+links_fallecidos_lesionados<-links_fallecidos_lesionados[links_fallecidos_lesionados!=""]
+
+# Descargar vinculos de vehículos involucrados
 anio <- 2016
 for (vinculo in links_vehiculos_involucrados) {
 	download_without_overwrite(
@@ -67,6 +80,7 @@ for (vinculo in links_vehiculos_involucrados) {
   Sys.sleep(1)
 }
 
+# Descargar vinculos de hechos de tránsito
 anio <- 2016
 for (vinculo in links_hechos_transito) {
 	download_without_overwrite(
@@ -78,6 +92,20 @@ for (vinculo in links_hechos_transito) {
 	anio <- anio + 1
   Sys.sleep(1)
 }
+
+# Descargar vinculos de fallecidos y lesionados
+anio <- 2016
+for (vinculo in links_fallecidos_lesionados) {
+	download_without_overwrite(
+		vinculo,
+		getwd(),
+		"fallecidos_lesionados",
+		anio
+	)
+	anio <- anio + 1
+  Sys.sleep(1)
+}
+
 
 # Se leen los archivos del directorio xlsx
 listaArchivos<-list.files(getwd())
@@ -106,7 +134,6 @@ for (archivo in listaArchivos){
 	    rm(temp_dataset)
 	  }
 	}
-
   
   # Repetir con otros archivos 
   else if (substr(base, 1, nchar(base)-5) == "hechos_transito"){
@@ -122,8 +149,23 @@ for (archivo in listaArchivos){
       rm(temp_dataset)
     }
   }
+
+  else if (substr(base, 1, nchar(base)-5) == "fallecidos_lesionados"){
+    if(!exists("dfFallecidosLesionados"))
+    {
+      dfFallecidosLesionados <- data.frame() 
+      dfFallecidosLesionados <- read.xlsx(archivo)
+    }
+    else
+    {
+      temp_dataset <- read.xlsx(archivo)
+      dfFallecidosLesionados <- Reduce(function(...)merge (..., all=T), list(dfFallecidosLesionados, temp_dataset))
+      rm(temp_dataset)
+    }
+  }
 }
+
 dfHechoTransitoLimpio <- select(dfHechoTransito,núm_corre, día_ocu,año_ocu,mes_ocu,día_sem_ocu,mupio_ocu,depto_ocu,tipo_veh,tipo_eve,g_hora,g_hora_5,)
 dfVehiculosInvolucradosLimpio <- select(dfVehiculosInvolucrados,núm_corre, día_ocu,año_ocu,mes_ocu,día_sem_ocu,mupio_ocu,depto_ocu,sexo_per,edad_per,mayor_menor,tipo_veh,tipo_veh,g_edad_80ymás,g_edad_60ymás,edad_quinquenales,g_hora,g_hora_5)
 # Salir del directorio de los .xlsx
-setwd("../")
+setwd("../../AnalisisR/")
