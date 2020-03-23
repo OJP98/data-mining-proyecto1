@@ -8,6 +8,7 @@ setwd("./")
 HechoTransito<-read.csv("./HechoTransito.csv",stringsAsFactors = FALSE)
 importaciones<-read.csv("./importacionesVehiculosSAT.csv",stringsAsFactors = FALSE)
 VehiculosInvolucrados<-read.csv("./VehiculosInvolucrados.csv",stringsAsFactors = FALSE)
+FallecidosLesionados<-read.csv("./FallecidosLesionados.csv",stringsAsFactors = FALSE)
 
 
 # d. Graficos exploratorios que le de ideas del estado de los datos.
@@ -214,3 +215,94 @@ barplot(table(importaciones[importaciones$Anio=="2020" & importaciones$Tipo.de.V
         main = "Modelos de motos importados en el 2020",
         xlab = "Año", ylab = "Cantidad de importaciones",
         col = "royalblue")
+
+######################################################################################
+
+# Tabla de g_hora_5
+table(HechoTransito$g_hora_5)
+table(VehiculosInvolucrados$g_hora_5)
+table(FallecidosLesionados$g_hora_5)
+
+# Tabla de sexo_per
+table(VehiculosInvolucrados$sexo_per)
+table(FallecidosLesionados$sexo_per)
+
+# Tabla de mayor_menor
+table(VehiculosInvolucrados$mayor_menor)
+table(FallecidosLesionados$mayor_menor)
+
+# Tabla de depto_ocu
+table(HechoTransito$depto_ocu)
+table(VehiculosInvolucrados$depto_ocu)
+table(FallecidosLesionados$depto_ocu)
+
+# Tabla de mupio_ocu
+table(HechoTransito$mupio_ocu)
+table(VehiculosInvolucrados$mupio_ocu)
+table(FallecidosLesionados$mupio_ocu)
+
+# Tabla de día_sem_ocu
+table(HechoTransito$día_sem_ocu)
+table(VehiculosInvolucrados$día_sem_ocu)
+table(FallecidosLesionados$día_sem_ocu)
+
+# Tabla de mes_ocu
+table(HechoTransito$mes_ocu)
+table(VehiculosInvolucrados$mes_ocu)
+table(FallecidosLesionados$mes_ocu)
+
+# Tabla de tipo_veh
+table(HechoTransito$tipo_veh)
+table(VehiculosInvolucrados$tipo_veh)
+table(FallecidosLesionados$tipo_veh)
+
+# Tabla de tipo_eve
+table(HechoTransito$tipo_eve)
+table(VehiculosInvolucrados$tipo_eve)
+table(FallecidosLesionados$tipo_eve)
+
+# Tabla de fall_les
+table(FallecidosLesionados$fall_les)
+
+# Tabla de año_ocu
+table(HechoTransito$año_ocu)
+table(VehiculosInvolucrados$año_ocu)
+table(FallecidosLesionados$año_ocu)
+
+# Tabla de g_hora
+table(HechoTransito$g_hora)
+table(VehiculosInvolucrados$g_hora)
+table(FallecidosLesionados$g_hora)
+
+# Tabla de g_edad_80ymás
+table(VehiculosInvolucrados$g_edad_80ymás)
+table(FallecidosLesionados$g_edad_80ymás)
+
+
+# Tabla de g_edad_60ymás
+table(HechoTransito$g_edad_60ymás)
+table(VehiculosInvolucrados$g_edad_60ymás)
+table(FallecidosLesionados$g_edad_60ymás)
+
+
+#############################################################################################
+
+
+# Distribucion normal de día_ocu
+qqnorm(HechoTransito$día_ocu)
+qqline(HechoTransito$día_ocu)
+
+
+qqnorm(VehiculosInvolucrados$día_ocu)
+qqline(VehiculosInvolucrados$día_ocu)
+
+
+qqnorm(FallecidosLesionados$día_ocu)
+qqline(FallecidosLesionados$día_ocu)
+
+# Distribucion normal de edad_per
+
+qqnorm(FallecidosLesionados$edad_per)
+qqline(FallecidosLesionados$edad_per)
+
+
