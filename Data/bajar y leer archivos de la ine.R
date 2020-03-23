@@ -14,7 +14,7 @@ library("stringr")
 library("openxlsx")
 library("dplyr")
 
-rm# Directorio principal
+# Directorio principal
 setwd("./Data")
 
 # Para obtener los links usé la siguiente shiny apps disponible en:https://spannbaueradam.shinyapps.io/r_regex_tester/ con el 
@@ -169,5 +169,7 @@ dfHechoTransitoLimpio <- select(dfHechoTransito,núm_corre, día_ocu,año_ocu,me
 dfVehiculosInvolucradosLimpio <- select(dfVehiculosInvolucrados,núm_corre, día_ocu,año_ocu,mes_ocu,día_sem_ocu,mupio_ocu,depto_ocu,sexo_per,edad_per,mayor_menor,tipo_veh,tipo_veh,g_edad_80ymás,g_edad_60ymás,edad_quinquenales,g_hora,g_hora_5)
 write.csv(dfHechoTransitoLimpio, file="HechoTransito.csv",row.names = F)
 write.csv(dfVehiculosInvolucradosLimpio, file="VehiculosInvolucrados.csv",row.names = F)
+write.csv(dfFallecidosLesionados, file="FallecidosLesionados.csv", row.names = F)
+
 # Salir del directorio de los .xlsx
 setwd("../../AnalisisR/")
