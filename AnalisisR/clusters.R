@@ -24,30 +24,35 @@ for (i in 1:nrow(falles)) {
 falles$grupoRespuesta <- grupoRespuesta
 rm(grupoRespuesta, i)
 
-# Hacer matriz de correlación para ver que variables aportan
-matriz_cor <- cor(falles)
-matriz_cor
+View(falles)
+#Matriz de correlacion
+matriz_cor <- cor(falles[,])
 corrplot(matriz_cor)
+View(matriz_cor)
 
-# Las variables que aportan, según un rango de correlación
-vars <- c("edad_per","tipo_veh","modelo_veh","tipo_eve")
 
-# Acorde a criterio personal
-vars <- c("día_ocu","hora_ocu","mes_ocu","día_sem_ocu","edad_per","tipo_veh","modelo_veh","tipo_eve")
+#Para determinar la cantidad correcto de clusteres
+wss <- (nrow(falles[falles$tipo_veh==4,2:20])-1)*sum(apply(falles[falles$tipo_veh==4,2:20],2,var))
 
-# Filtrar la data acorde a las variables seleccionadas
-data <- falles[(falles$modelo_veh != 9999), vars]
-
-# Obtener número de clusters según gráfico de codo
-wss <- (nrow(data)-1)*sum(apply(data,2,var))
 for (i in 2:10) 
-  wss[i] <- sum(kmeans(data, centers=i)$withinss)
+  wss[i] <- sum(kmeans(falles[falles$tipo_veh==4,2:20], centers=i)$withinss)
+
 plot(1:10, wss, type="b", xlab="Number of Clusters",  ylab="Within groups sum of squares")
 
+#Se realiza el cluster
+#K-medias
 
-# Usando otro paquete para saber el mejor número de clusters
+km<-kmeans(falles[falles$tipo_veh==4,2:20],3)
+#datos$grupo<-km$cluster
 
-##### ATENCIÓN, ESTÁ LIBRERÍA COMO QUE NO FUNCIONA #####
-nb <- NbClust(data, distance = "euclidean", min.nc = 2,max.nc = 10, method = "complete", index ="all")
+silkm<-silhouette(km$cluster,dist(falles[falles$tipo_veh==4,2:20]))
+mean(silkm[,3]) #0.81, no es la mejor particiÃ³n pero no estÃ¡ mal
+
+plotcluster(falles[falles$tipo_veh==4,2:20],km$cluster) #grafica la ubicaciÃ³n de los clusters
+
+
+
+
+
 
 
