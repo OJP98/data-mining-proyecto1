@@ -6,6 +6,7 @@
 setwd("../AnalisisR")
 library("ggpubr")
 library(corrplot)
+library(plyr)
 
 # Leer la entrada de los datos
 HechoTransito<-read.csv("../Data/HechoTransito.csv",stringsAsFactors = FALSE)
@@ -165,3 +166,19 @@ text(barp, 1, paste("fallecidos:", rev(vectorTotales),  sep="") ,cex=1)
 
 
 # TODO: Proporción cant. motos - total de accidentes que involucran moto POR AÑO
+
+motos2011 <- count(importaciones[importaciones$Anio=="2011",], "Tipo.de.Vehiculo")
+motos2011[42,]
+
+motos2011 <- count(importaciones[importaciones$Anio=="2011",], "Tipo.de.Vehiculo")
+
+
+
+
+
+
+
+
+
+
+
