@@ -41,9 +41,9 @@ plot(1:10, wss, type="b", xlab="Number of Clusters",  ylab="Within groups sum of
 
 #Se realiza el cluster
 #K-medias
-
+fallesCluster<-falles[falles$tipo_veh==4,2:20]
 km<-kmeans(falles[falles$tipo_veh==4,2:20],3)
-#datos$grupo<-km$cluster
+fallesCluster$grupo<-km$cluster
 
 silkm<-silhouette(km$cluster,dist(falles[falles$tipo_veh==4,2:20]))
 mean(silkm[,3]) #0.81, no es la mejor particiÃ³n pero no estÃ¡ mal
