@@ -32,27 +32,40 @@ View(matriz_cor)
 
 
 #Para determinar la cantidad correcto de clusteres
-wss <- (nrow(falles[falles$tipo_veh==4,2:20])-1)*sum(apply(falles[falles$tipo_veh==4,2:20],2,var))
+x<-falles[falles$tipo_veh==4,c(5:7,10,15,19,18)]
+
+wss <- (nrow(x)-1)*sum(apply(x,2,var))
 
 for (i in 2:10) 
-  wss[i] <- sum(kmeans(falles[falles$tipo_veh==4,2:20], centers=i)$withinss)
+  wss[i] <- sum(kmeans(x, i)$withinss)
 
 plot(1:10, wss, type="b", xlab="Number of Clusters",  ylab="Within groups sum of squares")
 
 #Se realiza el cluster
-#K-medias
-fallesCluster<-falles[falles$tipo_veh==4,2:20]
-km<-kmeans(falles[falles$tipo_veh==4,2:20],3)
-fallesCluster$grupo<-km$cluster
-
-silkm<-silhouette(km$cluster,dist(falles[falles$tipo_veh==4,2:20]))
-mean(silkm[,3]) #0.81, no es la mejor particiÃ³n pero no estÃ¡ mal
-
-plotcluster(falles[falles$tipo_veh==4,2:20],km$cluster) #grafica la ubicaciÃ³n de los clusters
+library(klaR)
+library(cluster) #Para calcular la silueta
 
 
+siluetas<-c()
+historial<-c()
+for (i in 2:20) {
+  for (variable in combn(names(falles),i,simplify=FALSE)) {
+    
+    print(variable)
+    
+    set.seed(20)
+    
+    x<-falles[falles$tipo_veh==4,variable]
+    result <- kmodes(x,3, iter.max = 50, weighted = FALSE)
+    silch<-silhouette(result$cluster,dist(x))
+    siluetas<-c(siluetas,mean(silch[,3]))
+    historial<-c(historial,list(variable))
+  }
+  
+}
 
 
 
 
+x$cluster<-result$cluster
 
