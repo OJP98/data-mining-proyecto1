@@ -221,5 +221,8 @@ barp <- barplot(
 text(barp, 1, paste("Motos: ", cantidad, sep="") ,cex=1, pos = 3)
 
 
+PorcentajeAccidentes <- c(((4336*1000)/133195),((3111*1000)/124329),((3664*1000)/163821))
+MotosFinal = data.frame(cbind(año_ocu,accidentes,cantidad,PorcentajeAccidentes))
+
 
 
